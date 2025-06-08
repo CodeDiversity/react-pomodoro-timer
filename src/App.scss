@@ -55,15 +55,82 @@ $tablet: "only screen and (max-width : 600px)";
   background-color: black;
 }
 
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+
+  @media #{$tablet} {
+    gap: 15px;
+  }
+}
+
+.duration-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+
+  label {
+    font-size: 1.2rem;
+    color: white;
+    font-weight: bold;
+
+    @media #{$tablet} {
+      font-size: 1rem;
+    }
+  }
+
+  .duration-dropdown {
+    font-size: 1.1rem;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 2px solid white;
+    border-radius: 8px;
+    padding: 8px 12px;
+    min-width: 140px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    @media #{$tablet} {
+      font-size: 1rem;
+      padding: 6px 10px;
+      min-width: 120px;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #4caf50;
+      box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    option {
+      background-color: #333;
+      color: white;
+      padding: 8px;
+    }
+  }
+}
+
 .button-row {
   margin: 20px;
   display: flex;
-  width: 50%;
-  justify-content: space-evenly;
-
-  @media #{$tablet} {
-    width: 75%;
-  }
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
 
   button {
     font-size: 1.4rem;
@@ -71,23 +138,32 @@ $tablet: "only screen and (max-width : 600px)";
     background-color: black;
     font-weight: bolder;
     height: 65px;
-    width: 47%;
+    width: 200px;
     border: 2px solid black;
-    border-radius: 5px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
 
     @media #{$tablet} {
-      width: 45%;
+      width: 130px;
       height: 55px;
       font-size: 1rem;
     }
 
     &:hover {
-      font-size: 1.6rem;
+      background-color: #333;
+      transform: translateY(-2px);
       cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 
       @media #{$tablet} {
-        font-size: 1.2rem;
+        transform: translateY(-1px);
       }
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
   }
 }

@@ -7,6 +7,7 @@ interface WorkerMessage {
 interface WorkerResponse {
   time: number;
   formatTime: string;
+  completed?: boolean;
 }
 
 let time = 1500;
@@ -43,6 +44,19 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
           formatTime: onBreak ? `Break: ${formatTime()}` : `Work: ${formatTime()}`,
         };
         self.postMessage(response);
+      } else if (active && time === 0) {
+        // Timer completed
+        active = false;
+        const response: WorkerResponse = {
+          time: 0,
+          formatTime: onBreak ? `Break: ${formatTime()}` : `Work: ${formatTime()}`,
+          completed: true,
+        };
+        self.postMessage(response);
+        if (interval) {
+          clearInterval(interval);
+          interval = null;
+        }
       }
     }, 1000);
   } else if (event.data.command === 'stop') {
