@@ -29,6 +29,12 @@ const App: React.FC = () => {
   const [count, setCount] = useState<number>(0);
   const [onBreak] = useState<boolean>(false);
   const [bgColor, setBgColor] = useState<string>("#fff");
+  const [lastCompletedDuration, setLastCompletedDuration] = useState<
+    number | null
+  >(null);
+  const [currentSessionDuration, setCurrentSessionDuration] = useState<
+    number | null
+  >(null);
 
   const workerRef = useRef<Worker | null>(null);
 
@@ -52,6 +58,7 @@ const App: React.FC = () => {
         if (event.data.completed) {
           setActive(false);
           setCount((prevCount) => prevCount + 1);
+          setLastCompletedDuration(currentSessionDuration ?? duration);
         }
       };
 
@@ -72,7 +79,7 @@ const App: React.FC = () => {
         workerRef.current = null;
       }
     };
-  }, [active, time, onBreak]);
+  }, [active, onBreak]);
 
   const formatTime = (): string => {
     const minutes = Math.floor(time / 60);
@@ -100,7 +107,12 @@ const App: React.FC = () => {
 
   const handleToggleTimer = (): void => {
     if (!active) {
-      setTime(duration);
+      // If we just completed a session, use that duration; otherwise use selected duration
+      const nextDuration = lastCompletedDuration ?? duration;
+      setTime(nextDuration);
+      setCurrentSessionDuration(nextDuration);
+      // Clear the completed duration once we start a new session
+      setLastCompletedDuration(null);
     }
     setActive(!active);
   };
