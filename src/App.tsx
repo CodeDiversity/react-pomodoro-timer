@@ -38,48 +38,70 @@ const App: React.FC = () => {
 
   const workerRef = useRef<Worker | null>(null);
 
+  // Worker creation and cleanup (Single Responsibility: Worker lifecycle)
   useEffect(() => {
-    if (active) {
-      // Create the worker using Vite's worker import syntax
-      workerRef.current = new Worker(
-        new URL("./timeWorker.ts", import.meta.url),
-        {
-          type: "module",
-        }
-      );
-
-      console.log("workerRef.current", workerRef.current);
-
-      workerRef.current.onmessage = (event: MessageEvent<WorkerResponse>) => {
-        console.log(event.data);
-        setTime(event.data.time);
-        document.title = event.data.formatTime;
-
-        if (event.data.completed) {
-          setActive(false);
-          setCount((prevCount) => prevCount + 1);
-          setLastCompletedDuration(currentSessionDuration ?? duration);
-        }
-      };
-
-      const message: WorkerMessage = { command: "start", time: time, onBreak };
-      workerRef.current.postMessage(message);
-    } else if (!active && workerRef.current) {
-      console.log("stopping");
-      const message: WorkerMessage = { command: "stop" };
-      workerRef.current.postMessage(message);
-      workerRef.current.terminate();
-      workerRef.current = null;
-    }
-
-    // Cleanup function
     return () => {
       if (workerRef.current) {
         workerRef.current.terminate();
         workerRef.current = null;
       }
     };
-  }, [active, onBreak]);
+  }, []);
+
+  // Handle timer completion (Single Responsibility: Completion logic)
+  const handleTimerCompletion = (): void => {
+    setActive(false);
+    setCount((prevCount) => prevCount + 1);
+    setLastCompletedDuration(currentSessionDuration ?? duration);
+  };
+
+  // Setup worker message handler (Single Responsibility: Message handling)
+  const setupWorkerMessageHandler = (worker: Worker): void => {
+    worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
+      console.log(event.data);
+      setTime(event.data.time);
+      document.title = event.data.formatTime;
+
+      if (event.data.completed) {
+        handleTimerCompletion();
+      }
+    };
+  };
+
+  // Create worker (Single Responsibility: Worker creation)
+  const createWorker = (): Worker => {
+    const worker = new Worker(new URL("./timeWorker.ts", import.meta.url), {
+      type: "module",
+    });
+    setupWorkerMessageHandler(worker);
+    return worker;
+  };
+
+  // Start timer (Single Responsibility: Starting timer)
+  const startTimer = (): void => {
+    workerRef.current ??= createWorker();
+    const message: WorkerMessage = { command: "start", time: time, onBreak };
+    workerRef.current.postMessage(message);
+  };
+
+  // Stop timer (Single Responsibility: Stopping timer)
+  const stopTimer = (): void => {
+    if (workerRef.current) {
+      const message: WorkerMessage = { command: "stop" };
+      workerRef.current.postMessage(message);
+      workerRef.current.terminate();
+      workerRef.current = null;
+    }
+  };
+
+  // Handle active state changes (Single Responsibility: Active state management)
+  useEffect(() => {
+    if (active) {
+      startTimer();
+    } else if (workerRef.current) {
+      stopTimer();
+    }
+  }, [active]);
 
   const formatTime = (): string => {
     const minutes = Math.floor(time / 60);
