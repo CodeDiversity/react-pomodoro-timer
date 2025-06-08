@@ -1,13 +1,11 @@
-
 $tablet: "only screen and (max-width : 600px)";
 
 @media #{$tablet} {
-
 }
 
-*{
+* {
   margin: 0;
-  font-family: 'Roboto Mono', monospace;
+  font-family: "Roboto Mono", monospace;
 }
 
 .App {
@@ -20,7 +18,7 @@ $tablet: "only screen and (max-width : 600px)";
   height: 100vh;
   justify-content: center;
 
-  h1{
+  h1 {
     font-size: 3rem;
     color: white;
     margin: 20px;
@@ -28,7 +26,7 @@ $tablet: "only screen and (max-width : 600px)";
       margin: 10px;
     }
   }
-  h2{
+  h2 {
     color: white;
     font-size: 3rem;
     margin: 20px;
@@ -36,44 +34,38 @@ $tablet: "only screen and (max-width : 600px)";
       margin: 10px;
     }
   }
-  p{
+  p {
     font-size: 1.8rem;
-    color:white;
+    color: white;
     margin: 20px;
     @media #{$tablet} {
       font-size: 1.6rem;
       margin: 10px;
     }
-    
   }
 }
 
-
-
-.colorPicker{
+.colorPicker {
   display: none;
 }
 
-#colorPicker{
+#colorPicker {
   padding: 30px;
   margin: 30px;
-  background-color: black
+  background-color: black;
 }
 
-.button-row{
-  @media #{$tablet} {
-    width: 75%;
-  }
+.button-row {
   margin: 20px;
   display: flex;
   width: 50%;
   justify-content: space-evenly;
-  button{
-    @media #{$tablet} {
-      width: 45%;
-      height: 55px;
-      font-size: 1rem;
-    }
+
+  @media #{$tablet} {
+    width: 75%;
+  }
+
+  button {
     font-size: 1.4rem;
     color: white;
     background-color: black;
@@ -82,12 +74,20 @@ $tablet: "only screen and (max-width : 600px)";
     width: 47%;
     border: 2px solid black;
     border-radius: 5px;
-    &:hover{
-      @media #{$tablet}{
-        font-size: 1.2rem;
-      }
+
+    @media #{$tablet} {
+      width: 45%;
+      height: 55px;
+      font-size: 1rem;
+    }
+
+    &:hover {
       font-size: 1.6rem;
       cursor: pointer;
+
+      @media #{$tablet} {
+        font-size: 1.2rem;
+      }
     }
   }
 }
